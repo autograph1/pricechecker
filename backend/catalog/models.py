@@ -6,3 +6,6 @@ class Product(models.Model):
     current_price = models.IntegerField()
     user = models.ForeignKey(User,on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.url
+
