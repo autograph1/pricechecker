@@ -4,7 +4,7 @@ from .serializers import ProductSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-@api_view(['GET'],['POST'])
+@api_view(['GET','POST'])
 def product_list(request):
     if request.method == 'GET':
         products = Product.objects.all()
