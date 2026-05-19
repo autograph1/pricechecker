@@ -20,4 +20,14 @@ def product_list(request):
         else:
             return Response(serializer.errors)
 
+@api_view(['GET','DELETE','PATCH'])
+def product_detail(request,id):
+    try:
+        product = Product.objects.get(id=id)
+    except Product.DoesNotExist:
+        return Response(
+    {"error": "Product not found"},status=404
+)
 
+    serializer = ProductSerializer(product)
+    return Response(serializer.data)

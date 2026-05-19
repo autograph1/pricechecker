@@ -4,7 +4,7 @@ class Product(models.Model):
     url = models.CharField(max_length=100)
     needed_price = models.IntegerField()
     current_price = models.IntegerField()
-    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
 
     def __str__(self):
         return self.url
