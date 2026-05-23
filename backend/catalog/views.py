@@ -28,6 +28,20 @@ def product_detail(request,id):
         return Response(
     {"error": "Product not found"},status=404
 )
-
     serializer = ProductSerializer(product)
-    return Response(serializer.data)
+    
+    if request.method=='GET':
+        return Response(serializer.data)
+    if request.method=='PATCH':
+        serializer = ProductSerializer(product,data=request.data,partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors,status=400)
+    
+    if request.method=='DELETE':
+        product.delete()
+        return Response(status=204)
+        
+
