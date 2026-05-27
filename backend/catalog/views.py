@@ -3,7 +3,7 @@ from .models import Product
 from .serializers import ProductSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-
+from rest_framework.generics import ListCreateAPIView
 @api_view(['GET','POST'])
 def product_list(request):
     if request.method == 'GET':
@@ -45,3 +45,6 @@ def product_detail(request,id):
         return Response(status=204)
         
 
+class ProductListCreateView(ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
