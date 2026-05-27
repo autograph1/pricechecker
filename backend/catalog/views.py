@@ -1,11 +1,7 @@
 from .models import Product
 from .serializers import ProductSerializer
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.viewsets import ModelViewSet
 
-class ProductListCreateView(ListCreateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-class ProductDetailView(RetrieveUpdateDestroyAPIView):
+class ProductListSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
