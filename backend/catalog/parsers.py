@@ -12,8 +12,6 @@ def parse_ozon(url):
 
         page.goto(url)
 
-        input("Пройди капчу и нажми Enter в терминале...")
-
         title = page.locator("h1").inner_text()
 
         price = int(
@@ -24,15 +22,7 @@ def parse_ozon(url):
             .replace("₽", "")
         )
 
-        result = {
+        return {
             "title": title,
             "price": price,
         }
-
-        print(result)
-
-        input("Нажми Enter для закрытия браузера...")
-
-        context.close()
-
-        return result
