@@ -6,4 +6,8 @@ class Command(BaseCommand):
         products = Product.objects.all()
         for product in products:
             data = parse_ozon(product.url)
-            print(data)
+            product.current_price = data["price"]
+            product.save()
+            print("Проверяю")
+            if product.current_price <= product.needed_price:
+                print("Цена достигнута")
