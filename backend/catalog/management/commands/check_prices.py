@@ -11,3 +11,4 @@ class Command(BaseCommand):
             print("Проверяю")
             if product.current_price <= product.needed_price:
                 print("Цена достигнута")
+                product.delete()
