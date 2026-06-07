@@ -135,3 +135,4 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
+BOT_TOKEN = "8779492584:AAFtVGwyiFrT1vCjJZSHnIuntSGJQzjpIoI"
