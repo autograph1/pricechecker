@@ -1,6 +1,6 @@
 import telebot
 from catalog.models import Product
-from catalog.parsers import parse_ozon
+from catalog.parsers_citilink import parse_citilink
 from django.conf import settings
 
 from users.models import User
@@ -56,7 +56,7 @@ def handle_message(message):
                 needed_price=0
             )
 
-            data = parse_ozon(message.text)
+            data = parse_citilink(message.text)
 
             product.title = data["title"]
             product.current_price = data["price"]
