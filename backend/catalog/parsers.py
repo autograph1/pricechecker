@@ -26,3 +26,5 @@ def parse_ozon(url):
             "title": title,
             "price": price,
         }
+    
+mai = "test"
