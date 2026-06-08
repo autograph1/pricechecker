@@ -1,9 +1,10 @@
 import telebot
-
+from catalog.models import Product
+from catalog.parsers import parse_ozon
 from django.conf import settings
 
 from users.models import User
-from catalog.models import Product
+
 
 
 waiting_for_link = []
@@ -49,15 +50,27 @@ def handle_message(message):
                 telegram_id=message.from_user.id
             )
 
-            Product.objects.create(
+            product = Product.objects.create(
                 owner=user,
                 url=message.text,
                 needed_price=0
             )
 
+            data = parse_ozon(message.text)
+
+            product.title = data["title"]
+            product.current_price = data["price"]
+            product.save()
+
             bot.send_message(
                 message.chat.id,
-                "Товар добавлен"
+                f"""
+✅ Товар добавлен
+
+📦 {product.title}
+
+💰 Текущая цена: {product.current_price} ₽
+                """
             )
 
         except Exception as e:

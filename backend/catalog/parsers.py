@@ -1,6 +1,4 @@
 from playwright.sync_api import sync_playwright
-
-
 def parse_ozon(url):
     with sync_playwright() as p:
         context = p.chromium.launch_persistent_context(
@@ -26,5 +24,3 @@ def parse_ozon(url):
             "title": title,
             "price": price,
         }
-    
-mai = "test"
