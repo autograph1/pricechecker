@@ -22,23 +22,33 @@ for product in products:
 
         new_price = data["price"]
 
-        if new_price != product.current_price:
+        if (
+            product.needed_price > 0
+            and new_price <= product.needed_price
+        ):
 
             bot.send_message(
                 product.owner.telegram_id,
                 f"""
-🔥 Цена изменилась
+🎯 Цена достигнута
 
 📦 {product.title}
 
-Было: {product.current_price} ₽
-Стало: {new_price} ₽
+💰 Текущая цена: {new_price} ₽
+
+🎯 Желаемая цена: {product.needed_price} ₽
+
+🗑 Товар автоматически удалён из отслеживания
                 """
             )
 
             print(
-                f"Цена изменилась: {product.title}"
+                f"Цена достигнута: {product.title}"
             )
+
+            product.delete()
+
+            continue
 
         product.current_price = new_price
         product.save()

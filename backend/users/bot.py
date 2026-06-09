@@ -11,6 +11,60 @@ waiting_for_link = []
 
 bot = telebot.TeleBot(settings.BOT_TOKEN)
 
+@bot.message_handler(commands=['price'])
+def set_price(message):
+
+    try:
+
+        parts = message.text.split()
+
+        product_id = int(parts[1])
+        needed_price = int(parts[2])
+
+        user = User.objects.get(
+            telegram_id=message.from_user.id
+        )
+
+        product = Product.objects.get(
+            id=product_id,
+            owner=user
+        )
+
+        product.needed_price = needed_price
+        product.save()
+
+        bot.send_message(
+            message.chat.id,
+            f"""
+🎯 Целевая цена установлена
+
+📦 {product.title}
+
+💰 Желаемая цена: {needed_price} ₽
+            """
+        )
+
+    except IndexError:
+
+        bot.send_message(
+            message.chat.id,
+            "Использование:\n/price ID ЦЕНА"
+        )
+
+    except ValueError:
+
+        bot.send_message(
+            message.chat.id,
+            "Цена и ID должны быть числами"
+        )
+
+    except Product.DoesNotExist:
+
+        bot.send_message(
+            message.chat.id,
+            "Товар не найден"
+        )
+
 @bot.message_handler(commands=['delete'])
 def delete_product(message):
 
