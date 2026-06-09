@@ -11,6 +11,44 @@ waiting_for_link = []
 
 bot = telebot.TeleBot(settings.BOT_TOKEN)
 
+@bot.message_handler(commands=['delete'])
+def delete_product(message):
+
+    try:
+        product_id = int(message.text.split()[1])
+
+        user = User.objects.get(
+            telegram_id=message.from_user.id
+        )
+
+        product = Product.objects.get(
+            id=product_id,
+            owner=user
+        )
+
+        title = product.title
+
+        product.delete()
+
+        bot.send_message(
+            message.chat.id,
+            f"🗑 Товар удалён\n\n{title}"
+        )
+
+    except IndexError:
+
+        bot.send_message(
+            message.chat.id,
+            "Использование:\n/delete ID"
+        )
+
+    except Product.DoesNotExist:
+
+        bot.send_message(
+            message.chat.id,
+            "Товар не найден"
+        )
+
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -129,3 +167,5 @@ def handle_message(message):
                 waiting_for_link.remove(
                     message.from_user.id
                 )
+
+
