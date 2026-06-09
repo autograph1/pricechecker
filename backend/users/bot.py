@@ -1,10 +1,10 @@
 import telebot
-from catalog.models import Product
-from catalog.parsers_citilink import parse_citilink
+
 from django.conf import settings
 
 from users.models import User
-
+from catalog.models import Product
+from catalog.parsers_citilink import parse_citilink
 
 
 waiting_for_link = []
@@ -15,7 +15,7 @@ bot = telebot.TeleBot(settings.BOT_TOKEN)
 @bot.message_handler(commands=['start'])
 def start(message):
 
-    user, created = User.objects.get_or_create(
+    User.objects.get_or_create(
         telegram_id=message.from_user.id,
         defaults={
             "username": f"tg_{message.from_user.id}"
@@ -40,12 +40,53 @@ def add_product(message):
     )
 
 
+@bot.message_handler(commands=['list'])
+def list_products(message):
+
+    print("LIST COMMAND")
+
+    user = User.objects.get(
+        telegram_id=message.from_user.id
+    )
+
+    products = Product.objects.filter(
+        owner=user
+    )
+
+    if not products.exists():
+
+        bot.send_message(
+            message.chat.id,
+            "У вас пока нет товаров"
+        )
+
+        return
+
+    text = "📦 Ваши товары:\n\n"
+
+    for product in products:
+
+        text += (
+            f"{product.id}. {product.title}\n"
+            f"💰 {product.current_price} ₽\n\n"
+        )
+
+    bot.send_message(
+        message.chat.id,
+        text
+    )
+
+
 @bot.message_handler(func=lambda message: True)
 def handle_message(message):
+
+    if message.text.startswith("/"):
+        return
 
     if message.from_user.id in waiting_for_link:
 
         try:
+
             user = User.objects.get(
                 telegram_id=message.from_user.id
             )
@@ -56,7 +97,9 @@ def handle_message(message):
                 needed_price=0
             )
 
-            data = parse_citilink(message.text)
+            data = parse_citilink(
+                message.text
+            )
 
             product.title = data["title"]
             product.current_price = data["price"]
@@ -82,4 +125,7 @@ def handle_message(message):
 
         finally:
 
-            waiting_for_link.remove(message.from_user.id)
+            if message.from_user.id in waiting_for_link:
+                waiting_for_link.remove(
+                    message.from_user.id
+                )
